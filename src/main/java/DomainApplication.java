@@ -1,26 +1,27 @@
-public class DomainApplication
+class DomainApplication
 {
     private DomainIOutput output;
+    private DomainIClock clock;
 
-
-    public DomainApplication(DomainIOutput output)
+    DomainApplication(DomainIClock clock, DomainIOutput output)
     {
+        this.clock = clock;
         this.output = output;
     }
 
-    public void run(String name)
+    void run(String name)
     {
-        if ((DomainApplicationTime.getNow().getHour() >= 6) && (DomainApplicationTime.getNow().getHour() < 12))
+        if ((this.clock.getHour() >= 6) && (this.clock.getHour() < 12))
         {
             this.output.send("Good morning " + name);
             return;
         }
-        else if ((DomainApplicationTime.getNow().getHour() >= 12) && (DomainApplicationTime.getNow().getHour() < 20))
+        else if ((this.clock.getHour() >= 12) && (this.clock.getHour() < 20))
         {
-            output.send("Good afternoon " + name);
+            this.output.send("Good afternoon " + name);
             return;
         }
 
-        output.send("Good night " + name);
+        this.output.send("Good night " + name);
     }
 }

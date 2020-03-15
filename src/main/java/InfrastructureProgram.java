@@ -4,7 +4,10 @@ public class InfrastructureProgram
     {
         String name = args.length > 0 ? args[0] : "World";
 
-        DomainApplication app = new DomainApplication(new InfrastructureConsoleOutput());
+        DomainIClock localDateTime = new InfrastructureLocalDateTime();
+        DomainIOutput consoleOutput = new InfrastructureConsoleOutput();
+
+        DomainApplication app = new DomainApplication(localDateTime, consoleOutput);
         app.run(name);
     }
 }

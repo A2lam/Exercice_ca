@@ -1,4 +1,6 @@
 public interface DomainIOutput
 {
-    public void send(String message);
+    void send(String message);
+
+    String getValue();
 }

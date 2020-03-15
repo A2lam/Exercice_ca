@@ -12,19 +12,23 @@ public class ProgramTest
         ByteArrayOutputStream newConsole = new ByteArrayOutputStream();
         System.setOut(new PrintStream(newConsole));
         System.setErr(new PrintStream(newConsole));
+
         return newConsole;
     }
 
     @Test
     public void goldenMaster_with_all_defaults()
     {
-        DomainApplicationTime.setNow(LocalDateTime.now());
-        ByteArrayOutputStream console = getWriterAndSetConsole();
+        ByteArrayOutputStream console = this.getWriterAndSetConsole();
         InfrastructureProgram.main(new String[]{});
         String consoleOutput = console.toString();
 
         assertEquals("Good night World\n", consoleOutput);
     }
+
+    /*
+    Ce n'est plus possible d'appeler le programme par défaut avec ApplicationTime
+    car maintenant le temps est une abstraction et ne fait plus partie du domaine.
 
     @Test
     public void refactored_should_return_morning_in_the_morning_with_defaults()
@@ -35,34 +39,35 @@ public class ProgramTest
         String consoleOutput = console.toString();
 
         assertEquals("Good morning World\n", consoleOutput);
+    }*/
+
+    @Test
+    public void refactored_should_return_afternoon_in_the_afternoon_with_name()
+    {
+        InfrastructureLocalDateTime localDateTime = new InfrastructureLocalDateTime();
+        InfrastructureInMemoryOutput inMemoryOutput = new InfrastructureInMemoryOutput();
+
+        localDateTime.setNow(LocalDateTime.of(2020, 3, 20, 18, 0, 0));
+
+        DomainApplication app = new DomainApplication(localDateTime, inMemoryOutput);
+        app.run("Toto");
+        String result = inMemoryOutput.getValue();
+
+        assertEquals("Good afternoon Toto", result);
     }
 
     @Test
     public void refactored_should_return_morning_in_the_morning_with_name()
     {
-        DomainApplicationTime.setNow(LocalDateTime.of(2020, 3, 10, 10, 0, 0));
+        InfrastructureLocalDateTime localDateTime = new InfrastructureLocalDateTime();
+        InfrastructureInMemoryOutput inMemoryOutput = new InfrastructureInMemoryOutput();
 
-        InMemoryOutput inMemoryOutput = new InMemoryOutput();
-        DomainApplication app = new DomainApplication(inMemoryOutput);
+        localDateTime.setNow(LocalDateTime.of(2020, 3, 10, 10, 0, 0));
+
+        DomainApplication app = new DomainApplication(localDateTime, inMemoryOutput);
         app.run("Toto");
         String result = inMemoryOutput.getValue();
 
         assertEquals("Good morning Toto", result);
-    }
-}
-
-class InMemoryOutput implements DomainIOutput
-{
-    private String output = "";
-
-    String getValue()
-    {
-        return output;
-    }
-
-    @Override
-    public void send(String message)
-    {
-        output += message;
     }
 }
